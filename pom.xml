@@ -8,11 +8,10 @@
 		<version>1.0.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.rondoit</groupId>
 	<artifactId>hrm-service</artifactId>
 	<version>1.0.0</version>
 	<name>hrm-service</name>
-	<description>Demo project for Spring Boot</description>
+	<description>A HRM Demo project for Spring Boot and Spring Cloud</description>
 	<properties>
 		<java.version>1.8</java.version>
 		<spring-cloud.version>2020.0.3</spring-cloud.version>
@@ -29,6 +28,27 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-stream</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jooq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.rondoit</groupId>
@@ -61,6 +81,70 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+				<!-- The jOOQ code generation plugin is also executed in the generate-sources phase, prior to compilation -->
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>${postgresql.version}</version>
+						<scope>runtime</scope>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<jdbc>
+						<driver>org.postgresql.Driver</driver>
+						<url>jdbc:postgresql://pgsql-db-01:5432/rondoit</url>
+						<!--                        <url>jdbc:postgresql://localhost:5432/rondo</url>-->
+						<user>postgres</user>
+						<password>postgres</password>
+					</jdbc>
+					<generator>
+						<database>
+							<name>org.jooq.meta.postgres.PostgresDatabase</name>
+							<includes>.*</includes>
+							<!-- All elements that are excluded from your schema (A Java regular expression.
+                                 Use the pipe to separate several expressions). Excludes match before
+                                 includes, i.e. excludes have a higher priority -->
+							<excludes>
+								db_schema_history
+							</excludes>
+							<inputSchema>public</inputSchema>
+<!--							<forcedTypes>-->
+<!--								<forcedType>-->
+<!--									&lt;!&ndash; Specify the Java type of your custom type. This corresponds to the Converter's <U> type. &ndash;&gt;-->
+<!--									<userType>org.joda.time.DateTime</userType>-->
+<!--									&lt;!&ndash; Associate that custom type with your converter. &ndash;&gt;-->
+<!--									<converter>com.rondoit.jooq.converter.JodaDateTimeConverter</converter>-->
+<!--									<types>TIMESTAMP</types>-->
+<!--								</forcedType>-->
+<!--							</forcedTypes>-->
+						</database>
+
+						<generate>
+							<!-- Generation flags: See advanced configuration properties -->
+						</generate>
+
+						<target>
+							<!-- The destination package of your generated classes (within the
+                                 destination directory) -->
+							<packageName>com.rondoit.jooq.domians</packageName>
+							<!-- The destination directory of generated classes -->
+							<directory>target/generated-sources/jooq-postgres</directory>
+						</target>
+					</generator>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
