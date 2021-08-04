@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: hrm-service
+  cloud:
+    config:
+      fail-fast: true
+      discovery:
+        enabled: true
+        service-id: config-server
+# Eureka client
+eureka:
+  client:
+    prefer-same-zone-eureka: true
+    region: region1
+    service-url:
+      zone1: http://discovery-server-01:8761/eureka/
+    availability-zones:
+      region1: zone1
